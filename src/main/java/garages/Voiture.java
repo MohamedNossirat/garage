@@ -9,15 +9,24 @@ public class Voiture {
 	private final List<Stationnement> myStationnements = new LinkedList<>();
 
 	public Voiture(String i) {
-		if (null == i) {
+		if (i == null) {
 			throw new IllegalArgumentException("Une voiture doit avoir une immatriculation");
 		}
-
 		immatriculation = i;
 	}
 
 	public String getImmatriculation() {
 		return immatriculation;
+	}
+
+	// Renvoie le dernier stationnement (ajout personnel).
+	// Doit renvoyer une erreur si la voiture n'a aucun stationnement.
+	public Stationnement getLastStationnement() {
+		// Retenir la fonction isEmpty
+		if (myStationnements.isEmpty()) {
+			throw new IllegalArgumentException("La voiture n'a aucun stationnement enregistré");
+		}
+		return myStationnements.get(myStationnements.size() - 1);
 	}
 
 	/**
@@ -27,8 +36,13 @@ public class Voiture {
 	 * @param g le garage où la voiture va stationner
 	 * @throws java.lang.Exception Si déjà dans un garage
 	 */
+
 	public void entreAuGarage(Garage g) throws Exception {
-		// Et si la voiture est déjà dans un garage ?
+		// Si la voiture est déjà dans un garage, on doit renvoyer une erreur.
+			Stationnement dernierStationnement = this.getLastStationnement();
+			if  (dernierStationnement.estEnCours() == true) {
+            	throw new Exception("La voiture est déjà dans un garage"); }
+		// On ajoute le nouveau stationnement
 		Stationnement s = new Stationnement(this, g);
 		myStationnements.add(s);
 	}
@@ -40,28 +54,37 @@ public class Voiture {
 	 * @throws java.lang.Exception si la voiture n'est pas dans un garage
 	 */
 	public void sortDuGarage() throws Exception {
-		throw new UnsupportedOperationException("Pas encore implémenté");
-		// TODO: Implémenter cette méthode
-		// Trouver le dernier stationnement de la voiture
-		// Terminer ce stationnement
+			// Trouver le dernier stationnement de la voiture
+			Stationnement dernierStationnement = getLastStationnement();
+			if (dernierStationnement.estEnCours() == false) {
+				throw new Exception("La voiture n'est pas dans un garage"); }
+			// Terminer ce stationnement 
+			dernierStationnement.terminer();
+			// La ligne suivante est probablement inutile
+            myStationnements.set(myStationnements.size() -1, dernierStationnement);
 	}
 
 	/**
 	 * @return l'ensemble des garages visités par cette voiture
 	 */
-	public Set<Garage> garagesVisites() {
-		// TODO: Implémenter cette méthode
-		throw new UnsupportedOperationException("Pas encore implémenté");
+	
+	 public Set<Garage> garagesVisites() {
+		// Le Set était déjà dans le code de l'énoncé.
+		Set<Garage> listegarages = new HashSet<>();
+		    for (Stationnement s : myStationnements) {
+                listegarages.add(s.getGarage());
+            }
+            return listegarages;
 	}
 
 	/**
 	 * @return vrai si la voiture est dans un garage, faux sinon
 	 */
+        // Vrai si le dernier stationnement est en cours
 	public boolean estDansUnGarage() {
-		// TODO: Implémenter cette méthode
-		throw new UnsupportedOperationException("Pas encore implémenté");
-		// Vrai si le dernier stationnement est en cours
-	}
+		Stationnement dernierStationnement = this.getLastStationnement();
+		return dernierStationnement.estEnCours();
+    }
 
 	/**
 	 * Pour chaque garage visité, imprime le nom de ce garage suivi de la liste des dates d'entrée / sortie dans ce
@@ -77,9 +100,14 @@ public class Voiture {
 	 *
 	 * @param out l'endroit où imprimer (ex: System.out)
 	 */
+        // Pas terminé !
+        
 	public void imprimeStationnements(PrintStream out) {
-		// TODO: Implémenter cette méthode
-		throw new UnsupportedOperationException("Pas encore implémenté");
-	}
+            // Pour chaque élément Garage de la liste 
+		for (Stationnement s : myStationnements) {
+                    System.out.println(s.toString());
+                }
+        }
+	
 
 }
