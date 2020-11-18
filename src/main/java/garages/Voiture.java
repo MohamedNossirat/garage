@@ -122,11 +122,17 @@ public class Voiture {
         
 	public void imprimeStationnements(PrintStream out) {
             // Pour chaque élément Garage de la liste 
-		for (Stationnement s : myStationnements) {
-                    System.out.println(s.getGarage().toString());
-                    System.out.println(s.toString());
+                Set<Garage> listegarages = garagesVisites();
+            	for (Garage g : listegarages) {
+                    // Afficher le garage
+                    System.out.println(g.toString());
+                    // Chercher les stationnements correspondant à ce garage
+                    for (Stationnement s : myStationnements) {
+                        if (s.getGarage().getName() == g.getName()) {
+                            // Afficher le stationnement
+                            System.out.println(s.toString());
+                        }
                 }
-        }
-	
-
+           }
+	}
 }
